@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Scatter Chart</title>
+    <script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
+    <script src="../node_modules/hammerjs/hammer.min.js"></script>
+    <script src="../node_modules/chartjs-plugin-zoom/chartjs-plugin-zoom.js"></script>
+    <script src="../chartjs-plugin-downsample.js"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+<div style="width:75%">
+    <div>
+        <canvas id="canvas"></canvas>
+        <div>
+            <label for="threshold">Threshold (total): </label>
+            <input type="range" id="threshold" min="1" max="0" value="0" step="1" style="width: 100%" />
+            <span id="thresholdCurrent">0</span>
+        </div>
+        <div>
+            <button type="button" onclick="addDataset(window.myLine);">Add Dataset</button>
+        </div>
+    </div>
+</div>
+<script>
+    var scalingFactor = function(value) {
+        return (value * 0.9) + (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 10);
+    };
+    var randomColor = function (opacity) {
+        return 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + (opacity || '.3') + ')';
+    };
+
+    var generateData = function (count) {
+        var data = [];
+
+        var y = 0;
+        for (var i = 0; i < count; i++) {
+            y = scalingFactor(y);
+            data.push({
+                x: i,
+                y: y,
+            });
+        }
+
+        return data;
+    };
+
+    var threshold = 0;
+    var pointsPerDataset = 5000;
+
+    var generateDataset = function(name, dataCount) {
+        return {
+            label: name,
+            data: generateData(dataCount),
+            borderColor: randomColor(1),
+            borderWidth: 2,
+            fill: false,
+        };
+    };
+
+    var updateChart = function(chart) {
+        chart.downsample(Math.floor(threshold / chart.data.datasets.length));
+        chart.update();
+    };
+
+    var addDataset = function(chart) {
+        chart.data.datasets.push(generateDataset(
+            Math.floor(Math.random() * 1337), pointsPerDataset
+        ));
+
+        updateChart(chart);
+    };
+
+    var config = {
+        type: 'line',
+        data: {
+            datasets: [generateDataset("Foo", pointsPerDataset), generateDataset("Bar", pointsPerDataset)]
+        },
+        options: {
+            responsive: true,
+            title:{
+                display:true,
+                text: 'Chart.js Downsample Plugin'
+            },
+            legend: {
+                display: false
+            },
+            scales: {
+              xAxes: [{
+                  type: 'linear',
+                  position: 'bottom',
+                  ticks: {
+                      maxRotation: 0,
+                      callback: function(value) {
+                          return Math.round(value);
+                      }
+                  },
+                  scaleLabel: {
+                      display: true,
+                      labelString: "Time (s)"
+                  }
+              }],
+              yAxes: [{
+                  id: 0,
+                  type: 'linear',
+                  position: 'left',
+                  ticks: {
+                      maxRotation: 0,
+                      callback: function(value) {
+                          return Math.round(value);
+                      }
+                  },
+              }]
+            },
+            downsample: {
+                enabled: true,
+                threshold: threshold,
+                auto: false,
+                preferOriginalData: true,
+                restoreOriginalData: false,
+            },
+            animation: {
+                duration: 0,
+            },
+            elements: {
+                point: {
+                    radius: 0, // disable points
+                }
+            },
+            pan: {
+                enabled: true,
+                mode: 'xy',
+            },
+            zoom: {
+                enabled: true,
+                mode: 'xy',
+            },
+        }
+    };
+
+    window.onload = function () {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+
+        var slider = document.getElementById("threshold"),
+            thresholdCurrent = document.getElementById("thresholdCurrent");
+
+        slider.value = threshold;
+        slider.max = thresholdCurrent.innerHTML = 500;
+
+        slider.oninput = function() {
+            threshold = thresholdCurrent.innerHTML = slider.value;
+            updateChart(window.myLine);
+        };
+    };
+
+</script>
+</body>
+
+</html>

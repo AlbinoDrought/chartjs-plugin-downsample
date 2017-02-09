@@ -1,0 +1,26 @@
+{
+  "name": "chartjs-plugin-downsample",
+  "version": "1.0.2",
+  "description": "Chart.js plugin to downsample chart data",
+  "main": "src/chartjs-plugin-downsample.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AlbinoDrought",
+  "license": "MIT",
+  "dependencies": {
+    "chart.js": "^2.5.0"
+  },
+  "devDependencies": {
+    "browserify": "^14.0.0",
+    "chartjs-plugin-zoom": "^0.4.5",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-insert": "^0.5.0",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^2.0.1",
+    "merge-stream": "^1.0.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
