@@ -2,6 +2,8 @@
 
 Plugin for downsampling data in Chart.js, based off of [sveinn-steinarsson/flot-downsample](https://github.com/sveinn-steinarsson/flot-downsample).
 
+[![NPM](https://nodei.co/npm/chartjs-plugin-downsample.png)](https://npmjs.org/package/chartjs-plugin-downsample)
+
 ## Configuration
 
 The configuration for this plugin lives in chartInstance.options.downsample. This looks like the following while setting up your chart:
