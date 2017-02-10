@@ -4,6 +4,14 @@ Plugin for downsampling data in Chart.js, based off of [sveinn-steinarsson/flot-
 
 [![NPM](https://nodei.co/npm/chartjs-plugin-downsample.png)](https://npmjs.org/package/chartjs-plugin-downsample)
 
+## Samples
+
+* [Basic usage](https://albinodrought.github.io/chartjs-plugin-downsample/samples/data.html)
+
+* [Dynamic datasets](https://albinodrought.github.io/chartjs-plugin-downsample/samples/data.html)
+
+* [Pan and zoom](https://albinodrought.github.io/chartjs-plugin-downsample/samples/data.html)
+
 ## Configuration
 
 The configuration for this plugin lives in chartInstance.options.downsample. This looks like the following while setting up your chart:
