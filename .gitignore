@@ -37,6 +37,3 @@ jspm_packages
 .node_repl_history
 
 .idea
-
-/chartjs-plugin-downsample.js
-/chartjs-plugin-downsample.min.js
