@@ -8,9 +8,9 @@ Plugin for downsampling data in Chart.js, based off of [sveinn-steinarsson/flot-
 
 * [Basic usage](https://albinodrought.github.io/chartjs-plugin-downsample/samples/data.html)
 
-* [Dynamic datasets](https://albinodrought.github.io/chartjs-plugin-downsample/samples/data.html)
+* [Dynamic datasets](https://albinodrought.github.io/chartjs-plugin-downsample/samples/many-datasets.html)
 
-* [Pan and zoom](https://albinodrought.github.io/chartjs-plugin-downsample/samples/data.html)
+* [Pan and zoom](https://albinodrought.github.io/chartjs-plugin-downsample/samples/panzoom.html)
 
 ## Configuration
 
