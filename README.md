@@ -1,5 +1,7 @@
 # chartjs-plugin-downsample
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/AlbinoDrought/chartjs-plugin-downsample.svg)](https://greenkeeper.io/)
+
 Plugin for downsampling data in Chart.js, based off of [sveinn-steinarsson/flot-downsample](https://github.com/sveinn-steinarsson/flot-downsample).
 
 [![NPM](https://nodei.co/npm/chartjs-plugin-downsample.png)](https://npmjs.org/package/chartjs-plugin-downsample)
