@@ -4,6 +4,7 @@
   "description": "Chart.js plugin to downsample chart data",
   "main": "src/chartjs-plugin-downsample.js",
   "scripts": {
+    "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "AlbinoDrought",
