@@ -1,6 +1,6 @@
 {
   "name": "chartjs-plugin-downsample",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Chart.js plugin to downsample chart data",
   "main": "src/chartjs-plugin-downsample.js",
   "scripts": {
