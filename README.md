@@ -68,6 +68,10 @@ If options are not changed from their defaults, data will be downsampled every t
 }
 ```
 
+## Building
+
+`npm run build` will generate a browser-ready `chartjs-plugin-downsample.js` and `chartjs-plugin-downsample.min.js`
+
 ## License
 
 chartjs-plugin-downsample is released under the terms of [the MIT License](http://www.opensource.org/licenses/MIT).
