@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Scatter Chart</title>
+    <script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
+    <script src="../chartjs-plugin-downsample.js"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+<div style="width:75%">
+    <div>
+        <canvas id="canvas"></canvas>
+        <div>
+            <label for="threshold">Threshold (total): </label>
+            <input type="range" id="threshold" min="1" max="0" value="0" step="1" style="width: 100%" />
+            <span id="thresholdCurrent">0</span>
+        </div>
+    </div>
+</div>
+<script>
+    var scalingFactor = function(value) {
+        return (value * 0.9) + (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 10);
+    };
+    var randomColor = function (opacity) {
+        return 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + (opacity || '.3') + ')';
+    };
+
+    var generateData = function (count) {
+        var data = [];
+
+        var y = 0;
+        for (var i = 0; i < count; i++) {
+            y = scalingFactor(y);
+            data.push({
+                x: i,
+                y: y,
+            });
+        }
+
+        return data;
+    };
+
+    var threshold = 0;
+
+    var generateDataset = function(name, dataCount) {
+        return {
+            id: name,
+            label: name,
+            data: generateData(dataCount),
+            borderColor: randomColor(1),
+            borderWidth: 2,
+            fill: false,
+        };
+    };
+
+    var updateChart = function(chart) {
+        chart.options.downsample.threshold = Math.floor(threshold / chart.data.datasets.length);
+        chart.update();
+    };
+
+    var config = {
+        type: 'line',
+        data: {
+            datasets: [generateDataset("Foo", 500), generateDataset("Bar", 500), generateDataset("Foobar", 500)]
+        },
+        options: {
+            responsive: true,
+            title:{
+                display:true,
+                text: 'Chart.js Downsample Plugin'
+            },
+            legend: {
+                display: false
+            },
+            scales: {
+              xAxes: [{
+                  type: 'linear',
+                  position: 'bottom',
+              }]
+            },
+            downsample: {
+                enabled: true,
+                threshold: 50,
+                preferOriginalData: false,
+                targetDatasets: ["Foo", "Bar"],
+            },
+            animation: {
+                duration: threshold,
+            },
+            elements: {
+                point: {
+                    radius: 0, // disable points
+                }
+            }
+        }
+    };
+
+    window.onload = function () {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+
+        var slider = document.getElementById("threshold"),
+            thresholdCurrent = document.getElementById("thresholdCurrent");
+
+        slider.max = 500;
+        slider.value = thresholdCurrent.innerHTML = config.options.downsample.threshold;
+
+        slider.oninput = function() {
+            threshold = thresholdCurrent.innerHTML = slider.value;
+            updateChart(window.myLine);
+        };
+    };
+
+</script>
+</body>
+
+</html>

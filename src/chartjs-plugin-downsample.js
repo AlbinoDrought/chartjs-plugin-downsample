@@ -19,6 +19,9 @@ var defaultOptions = {
     // if true, downsamples original data instead of data
     preferOriginalData: false,
 
+    //if not undefined and not empty, indicates the ids of the datasets to downsample
+    targetDatasets: [],
+
 };
 
 var floor = Math.floor,
@@ -99,12 +102,38 @@ function getOptions(chartInstance) {
     return chartInstance.options.downsample;
 }
 
+function getFilteredDatasets(chartInstance){
+    var targetDatasets = getOptions(chartInstance).targetDatasets;
+    var datasets = chartInstance.data.datasets;
+
+    if (targetDatasets.length === 0) {
+        return datasets;
+    }
+
+    var targetDatasetsMap = {};
+    for (var i = 0; i < targetDatasets.length; i++) {
+        var targetDataset = targetDatasets[i];
+        targetDatasetsMap[targetDataset] = true;
+    }
+
+    var filteredDatasets = [];
+    for (var i = 0; i < datasets.length; i++) {
+        var dataset = datasets[i];
+
+        if (targetDatasetsMap[dataset.id]) {
+            filteredDatasets.push(dataset);
+        }
+    }
+
+    return filteredDatasets;
+}
+
 function downsampleChart(chartInstance) {
     var options = getOptions(chartInstance),
         threshold = options.threshold;
     if(!options.enabled) return;
 
-    var datasets = chartInstance.data.datasets;
+    var datasets = getFilteredDatasets(chartInstance);
     for(var i = 0; i < datasets.length; i++) {
         var dataset = datasets[i];
 
@@ -147,7 +176,7 @@ var downsamplePlugin = {
         var options = getOptions(chartInstance);
         if(!options.enabled || !options.restoreOriginalData) return;
 
-        var datasets = chartInstance.data.datasets;
+        var datasets = getFilteredDatasets(chartInstance);
         for(var i = 0; i < datasets.length; i++) {
             var dataset = datasets[i];
 
