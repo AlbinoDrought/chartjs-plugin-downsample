@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Scatter Chart</title>
+    <script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
+    <script src="../chartjs-plugin-downsample.js"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+<div style="width:75%">
+    <div>
+        <canvas id="canvas"></canvas>
+        <div>
+            <label for="threshold">Threshold: </label>
+            <input type="range" id="threshold" min="1" max="0" value="0" step="1" style="width: 100%" />
+            <span id="thresholdCurrent">0</span>
+        </div>
+        <div>
+            <label for="pointsPerUpdate">Points Per Update: </label>
+            <input type="range" id="pointsPerUpdate" min="10" max="1000" value="50" step="10" style="width: 100%" />
+            <span id="pointsPerUpdateCurrent">0</span>
+        </div>
+        <div>
+            <label for="update">
+                <input id="update" type="checkbox" checked>
+                Update
+            </label>
+        </div>
+        <div>
+            <span id="totalPoints"></span>
+        </div>
+    </div>
+</div>
+<script>
+    var scalingFactor = function(value) {
+        return (value * 0.9) + (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 10);
+    };
+    var randomColor = function (opacity) {
+        return 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + (opacity || '.3') + ')';
+    };
+
+    var generateData = function (count) {
+        var data = [];
+
+        var y = 0;
+        for (var i = 0; i < count; i++) {
+            y = scalingFactor(y);
+            data.push({
+                x: i,
+                y: y,
+            });
+        }
+
+        return data;
+    };
+
+    var generateDataset = function(name, dataCount) {
+        return {
+            label: name,
+            data: generateData(dataCount),
+            borderColor: randomColor(1),
+            borderWidth: 2,
+            fill: false,
+        };
+    };
+
+    var config = {
+        type: 'line',
+        data: {
+            datasets: [generateDataset("Foo", 500), generateDataset("Bar", 500)]
+        },
+        options: {
+            responsive: true,
+            title:{
+                display:true,
+                text: 'Chart.js Downsample Plugin'
+            },
+            legend: {
+                display: false
+            },
+            scales: {
+              xAxes: [{
+                  type: 'linear',
+                  position: 'bottom',
+              }]
+            },
+            downsample: {
+                enabled: true,
+                threshold: 100,
+                preferOriginalData: true,
+            },
+            animation: {
+                duration: 0,
+            },
+            elements: {
+                point: {
+                    radius: 0, // disable points
+                }
+            }
+        }
+    };
+
+    window.onload = function () {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+
+        var slider = document.getElementById("threshold"),
+            thresholdCurrent = document.getElementById("thresholdCurrent"),
+            pointsPerUpdateSlider = document.getElementById("pointsPerUpdate"),
+            pointsPerUpdateCurrent = document.getElementById("pointsPerUpdateCurrent"),
+            updateCheckbox = document.getElementById("update"),
+            totalPointsSpan = document.getElementById("totalPoints");
+
+        slider.max =  10000;
+        slider.value = thresholdCurrent.innerText = config.options.downsample.threshold;
+
+        slider.oninput = function() {
+            window.myLine.options.downsample.threshold = thresholdCurrent.innerText = slider.value;
+            window.myLine.update();
+        };
+
+        pointsPerUpdateCurrent.innerText = pointsPerUpdateSlider.value;
+        pointsPerUpdateSlider.oninput = function () {
+            pointsPerUpdateCurrent.innerText = pointsPerUpdateSlider.value;
+        };
+
+        setInterval(function () {
+            if (!updateCheckbox.checked) {
+                return;
+            }
+            var totalPoints = 0;
+            for (var i = 0; i < window.myLine.config.data.datasets.length; i++) {
+                var dataset = window.myLine.config.data.datasets[i];
+                for (var ii = 0; ii < pointsPerUpdateSlider.value; ii++) {
+                    dataset.data.push({
+                        x: dataset.data[dataset.data.length - 1].x + 1,
+                        y: scalingFactor(dataset.data[dataset.data.length - 1].y),
+                    });
+                }
+                totalPoints += dataset.data.length;
+            }
+            window.myLine.update();
+            totalPointsSpan.innerText = "Total Points: " + totalPoints;
+        }, 1000);
+    };
+</script>
+</body>
+
+</html>
